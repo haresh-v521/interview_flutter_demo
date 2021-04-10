@@ -1,0 +1,2 @@
+const int NO_INTERNET=1000;
+const int API_TIME_OUT=10001;

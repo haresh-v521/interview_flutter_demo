@@ -25,5 +25,8 @@ class ApiBloc extends Bloc<ApiEvent, ApiState> {
             (success) => GetApiState(apiResponseModel: success),
       );
     }
+    if (event is SingleCheckEvent) {
+      yield SingleCheckState(isCheck: event.isCheck);
+    }
   }
 }

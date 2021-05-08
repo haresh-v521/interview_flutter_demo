@@ -32,6 +32,7 @@ class Datum {
     this.eventImage,
     this.eventDescriptio,
     this.eventDate,
+    this.isChecked,
   });
 
   int eventId;
@@ -39,7 +40,8 @@ class Datum {
   int eventTime;
   String eventImage;
   String eventDescriptio;
-  DateTime eventDate;
+  String eventDate;
+  bool isChecked;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     eventId: json["event_id"] == null ? null : json["event_id"],
@@ -47,7 +49,8 @@ class Datum {
     eventTime: json["event_time"] == null ? null : json["event_time"],
     eventImage: json["event_image"] == null ? null : json["event_image"],
     eventDescriptio: json["event_descriptio"] == null ? null : json["event_descriptio"],
-    eventDate: json["event_date"] == null ? null : DateTime.parse(json["event_date"]),
+    eventDate: json["event_date"] == null ? null : json["event_date"],
+    isChecked: false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -56,6 +59,7 @@ class Datum {
     "event_time": eventTime == null ? null : eventTime,
     "event_image": eventImage == null ? null : eventImage,
     "event_descriptio": eventDescriptio == null ? null : eventDescriptio,
-    "event_date": eventDate == null ? null : "${eventDate.year.toString().padLeft(4, '0')}-${eventDate.month.toString().padLeft(2, '0')}-${eventDate.day.toString().padLeft(2, '0')}",
+    "event_date": eventDate == null ? null : eventDate,
+    "isChecked": isChecked,
   };
 }

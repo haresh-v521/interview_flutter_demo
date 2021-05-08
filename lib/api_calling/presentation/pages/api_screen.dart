@@ -23,6 +23,7 @@ class _ApiScreenState extends State<ApiScreen> {
   bool isLoading = false;
   String mainError = "";
   List<ApiWidget> apiWidgetList;
+  bool isAllCheck = false;
 
   @override
   void initState() {
@@ -31,30 +32,16 @@ class _ApiScreenState extends State<ApiScreen> {
     //http://52.66.128.99/demo-api/demo_api.php
     super.initState();
   }
-  String readTimestamp(int timestamp) {
 
-    var now = new DateTime.now();
-    var format = new DateFormat('HH:mm:ss');
-    var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
-    var diff = date.difference(now);
-    var time = '';
-    if (diff.inSeconds <= 0 || diff.inSeconds > 0 && diff.inMinutes == 0 || diff.inMinutes > 0 && diff.inHours == 0 || diff.inHours > 0 && diff.inDays == 0) {
-      time = format.format(date);
-    } else {
-      if (diff.inDays == 1) {
-        time = diff.inDays.toString() + 'DAY AGO';
-      } else {
-        time = diff.inDays.toString() + 'DAYS AGO';
-      }
-    }
-    return time;
-  }
   @override
   Widget build(BuildContext context) {
     Scr.setScreenSize(context);
 
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: Text("Demo App"),
+        ),
         backgroundColor: Colors.white,
         body: BlocListener(
           bloc: bloc,
@@ -63,38 +50,58 @@ class _ApiScreenState extends State<ApiScreen> {
             if (state is LoadingEndApiState) isLoading = false;
             if (state is GetApiState) {
               apiWidgetList = [];
-              state.apiResponseModel.data.forEach((Datum datum){
-                dynamic milisec=  (DateTime.now().millisecondsSinceEpoch)+(datum.eventTime*60*1000);
-                ApiWidget apiWidget=new ApiWidget(datum: datum,cTime: "",);
-                apiWidgetList.add(apiWidget);
-                int _start;
-                Timer.periodic(
-                  Duration(seconds: 1), (Timer timer) {
-
-                    setState(() {
-                      _start= milisec-DateTime.now().millisecond;
-                      apiWidget.cTime= readTimestamp(_start);
-                    });
-                },
+              state.apiResponseModel.data.forEach((Datum datum) {
+                ApiWidget apiWidget = new ApiWidget(
+                  datum: datum,
+                  cTime: "",
                 );
+                apiWidgetList.add(apiWidget);
               });
+              apiWidgetList.sort((a, b) => a.datum.eventTime.compareTo(b.datum.eventTime));
             }
           },
           child: BlocBuilder(
             bloc: bloc,
-            builder: (context, state) => Container(
+            builder: (context, state) =>
+
+                Container(
               height: height,
               width: width,
               child: Stack(
                 children: [
-                  ListView.builder(
-                    cacheExtent: 100,
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                    padding: EdgeInsets.only(bottom: 65.0),
-                    itemBuilder: (context, index) {
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 16.0),
+                    height: 50.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 0.0, top: 5.0),
+                          child: Text(
+                            "Select All ",
+                            style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Checkbox(
+                          value: isAllCheck,
+                          onChanged: (setAllCheck) {
+                            setState(() {
+                              isAllCheck = setAllCheck;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 50.0),
+                    child: ListView.builder(
+                      padding: EdgeInsets.only(bottom: 65.0),
+                      itemBuilder: (context, index) {
                         return apiWidgetList[index];
-                    },
-                    itemCount: apiWidgetList.length,
+                      },
+                      itemCount: apiWidgetList.length,
+                    ),
                   ),
                   if (isLoading) screenProgressIndicatorHalf,
                 ],

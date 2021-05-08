@@ -13,7 +13,7 @@ Widget screenProgressIndicator = Container(
 );
 
 Widget screenProgressIndicatorHalf = Container(
-  height: height * 0.6,
+  height: height * 0.2,
   width: width,
   child: Center(
     child: CircularProgressIndicator(),

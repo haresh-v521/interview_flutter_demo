@@ -22,3 +22,9 @@ class GetApiState extends ApiState {
 
   GetApiState({this.apiResponseModel});
 }
+
+class SingleCheckState extends ApiState {
+  bool isCheck;
+
+  SingleCheckState({this.isCheck});
+}

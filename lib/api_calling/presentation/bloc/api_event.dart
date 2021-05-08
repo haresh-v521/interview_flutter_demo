@@ -5,3 +5,7 @@ abstract class ApiEvent {}
 class GetApiEvent extends ApiEvent {
   GetApiEvent();
 }
+class SingleCheckEvent extends ApiEvent {
+  final bool isCheck;
+  SingleCheckEvent({this.isCheck});
+}
